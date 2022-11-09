@@ -23,13 +23,21 @@ const Contracts: NextPage = ({
   const [kip37, setKip37] = useState()
 
   const metamaskContractValidity = async () => {
-    const code = await web3.eth.getCode(kip7address)
+
+    const contract =  [kip7address, kip17address, kip37address].find( addr => {
+      if (addr) return caver.utils.isAddress(addr)
+    })
+    const code = await web3.eth.getCode(contract)
     return code === '0x' ? false : true
   }
 
   const caverContractValidity = async () => {
     try {
-      const code = await caver.klay.getCode(kip7address)
+      const contract =  [kip7address, kip17address, kip37address].find( addr => {
+            if (addr) return caver.utils.isAddress(addr)
+          })
+
+      const code = await caver.klay.getCode(contract)
       return code === '0x' ? false : true
     } catch (err) {
       console.error('error checking contract validity')
