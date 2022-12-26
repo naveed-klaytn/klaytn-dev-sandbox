@@ -5,6 +5,8 @@ import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Button, Tooltip } from 'flowbite-react'
+import morlias from './moralisIPFS'
+
 
 const ipfsConn = {
   host: 'ipfs.infura.io',
@@ -45,7 +47,7 @@ const KIP17 = ({ kip17 }: props) => {
 
   const mintToken = async () => {
     const id = toast.loading('Minting Tokens....', { theme: 'colored' })
-    if (!kip17) {
+    if (kip17) {
       toast.update(id, {
         render: 'Contract not deployed yet',
         type: 'error',
@@ -64,6 +66,7 @@ const KIP17 = ({ kip17 }: props) => {
       console.log('metadata: ', metadata)
 
       await initCaverIPFS()
+      // TODO: after mintToken button hit: uploading on ipfs again as metadata (not just image)
       const cid = await caver.ipfs.add(Buffer.from(JSON.stringify(metadata)).buffer)
 
       const uri = `https://infura-ipfs.io/ipfs/${cid}`
@@ -103,7 +106,9 @@ const KIP17 = ({ kip17 }: props) => {
       const reader = new FileReader()
       reader.addEventListener('load', async (event) => {
         if (event && event.target && event.target.result != null) {
+          // TODO: adding moralis functionality here...
           const cid = await caver.ipfs.add(event.target.result)
+          // const cideMoralis = await moralis.upload(event.target.result);
 
           const url = `https://infura-ipfs.io/ipfs/${cid}`
           console.log('ipfs url: ', url)
